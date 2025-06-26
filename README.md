@@ -25,6 +25,17 @@ git pull
 
 This will fetch and merge changes from the remote repository into your local copy.
 
+## Synchronizing the Repository
+
+To synchronize your local repository with the remote repository, you can use the following commands:
+
+```bash
+git fetch
+git merge
+```
+
+The `git fetch` command retrieves the latest changes from the remote repository without modifying your working directory. The `git merge` command applies those changes to your current branch.
+
 ## Fonte dos dados
 
 [CVM - Dados Abertos](https://dados.cvm.gov.br/dados/FI/)
