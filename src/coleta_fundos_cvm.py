@@ -14,7 +14,6 @@ def baixar_cadastro_fundos():
     url = "https://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv"
     df = pd.read_csv(url, sep=';', encoding='latin1', low_memory=False)
     df = df[['CNPJ_FUNDO', 'DENOM_SOCIAL', 'CLASSE']]
-    print(df.head())
     return df
 
 
@@ -30,8 +29,6 @@ def baixar_dados_mes(ano_mes):
         
         with z.open(csv_name) as f:
             df = pd.read_csv(f, sep=';', encoding='latin1', low_memory=False)
-            print(f"Colunas disponíveis em {ano_mes}:")
-            print(df.columns)
             print(f"Número de linhas em {ano_mes}: {len(df)}")
 
 
@@ -70,15 +67,30 @@ def coletar_dados_cvm(meses: list):
 
     return df_total[['data', 'cnpj', 'DENOM_SOCIAL', 'CLASSE', 'valor_cota', 'patrimonio', 'aportes', 'resgates']]
 
-if __name__ == "__main__":
-    meses = ['202404', '202405']
+def exportar_dados_fundos(meses: list):
+    """
+    Coleta dados de fundos e exporta para um arquivo CSV.
+
+    Args:
+        meses (list): Lista de meses no formato 'YYYYMM'.
+        output_path (str): Caminho do arquivo de saída.
+    """
     df_fundos = coletar_dados_cvm(meses)
     
+    if df_fundos.empty:
+        print("Nenhum dado foi coletado para exportação.")
+        return
+
     import os
+    output_path = "dados/fundos_set_out_2024.csv"
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    df_fundos.to_csv(output_path, index=False)
+    print(f"Dados salvos em '{output_path}'")
+    return df_fundos
 
-    # Cria o diretório 'dados' se ele não existir
-    os.makedirs("dados", exist_ok=True)
+if __name__ == "__main__":
+    meses = ['202409', '202410']
+    exportar_dados_fundos(meses)
 
-    df_fundos.to_csv("dados/fundos_abril_maio_2024.csv", index=False)
-    print(df_fundos.head())
+
 
